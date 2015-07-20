@@ -6,7 +6,7 @@ use EXSyst\Component\Grammar\StringReader;
 
 class DOMUtils
 {
-    public static function outerHTML(DOMNode $node = null)
+    public static function outerHTML(\DOMNode $node = null)
     {
         if ($node === null) {
             return '';
@@ -17,47 +17,61 @@ class DOMUtils
         return $doc->saveHTML();
     }
 
-    public static function getElementsByClassName(DOMNode $node = null, $className, $maxLevel = null)
+    public static function innerHTML(\DOMNode $node = null)
+    {
+        if ($node === null) {
+            return '';
+        }
+        $doc = $node->ownerDocument;
+        $html = [];
+        foreach ($node->childNodes as $child) {
+            $html[] = $doc->saveHTML($child);
+        }
+
+        return implode('', $html);
+    }
+
+    public static function getElementsByClassName(\DOMNode $node = null, $className, $maxLevel = null)
     {
         return self::getElementsBy($node, self::_classNameTest($className), $maxLevel);
     }
 
-    public static function getFirstElementByClassName(DOMNode $node = null, $className, $maxLevel = null)
+    public static function getFirstElementByClassName(\DOMNode $node = null, $className, $maxLevel = null)
     {
         return self::getFirstElementBy($node, self::_classNameTest($className), $maxLevel);
     }
 
-    public static function getElementsByClassNameIter(DOMNode $node = null, $className, $maxLevel = null)
+    public static function getElementsByClassNameIter(\DOMNode $node = null, $className, $maxLevel = null)
     {
         return self::getElementsByIter($node, self::_classNameTest($className), $maxLevel);
     }
 
-    public static function getElementsByNodeName(DOMNode $node = null, $nodeName, $maxLevel = null)
+    public static function getElementsByNodeName(\DOMNode $node = null, $nodeName, $maxLevel = null)
     {
         return self::getElementsBy($node, self::_nodeNameTest($nodeName), $maxLevel);
     }
 
-    public static function getFirstElementByNodeName(DOMNode $node = null, $nodeName, $maxLevel = null)
+    public static function getFirstElementByNodeName(\DOMNode $node = null, $nodeName, $maxLevel = null)
     {
         return self::getFirstElementBy($node, self::_nodeNameTest($nodeName), $maxLevel);
     }
 
-    public static function getElementsByNodeNameIter(DOMNode $node = null, $nodeName, $maxLevel = null)
+    public static function getElementsByNodeNameIter(\DOMNode $node = null, $nodeName, $maxLevel = null)
     {
         return self::getElementsByIter($node, self::_nodeNameTest($nodeName), $maxLevel);
     }
 
-    public static function getElementById(DOMNode $node = null, $id, $maxLevel = null)
+    public static function getElementById(\DOMNode $node = null, $id, $maxLevel = null)
     {
         return self::getFirstElementBy($node, self::_idTest($nodeName), $maxLevel);
     }
 
-    public static function getElementsBy(DOMNode $node = null, $by, $maxLevel = null)
+    public static function getElementsBy(\DOMNode $node = null, $by, $maxLevel = null)
     {
         return iterator_to_array(self::getElementsByIter($node, $by, $maxLevel));
     }
 
-    public static function getFirstElementBy(DOMNode $node = null, $by, $maxLevel = null)
+    public static function getFirstElementBy(\DOMNode $node = null, $by, $maxLevel = null)
     {
         foreach (self::getElementsByIter($node, $by, $maxLevel) as $node) {
             return $node;
@@ -66,7 +80,7 @@ class DOMUtils
         return;
     }
 
-    public static function getElementsByIter(DOMNode $node = null, $by, $maxLevel = null)
+    public static function getElementsByIter(\DOMNode $node = null, $by, $maxLevel = null)
     {
         if ($maxLevel !== null && $maxLevel <= 0) {
             return;
@@ -87,7 +101,7 @@ class DOMUtils
         }
     }
 
-    public static function selectFirstNode(DOMNode $node = null, $selector, array $functions = [])
+    public static function selectFirstNode(\DOMNode $node = null, $selector, array $functions = [])
     {
         foreach (self::selectNodesIter($node, $selector, $functions) as $node) {
             return $node;
@@ -96,12 +110,12 @@ class DOMUtils
         return;
     }
 
-    public static function selectNodes(DOMNode $node = null, $selector, array $functions = [])
+    public static function selectNodes(\DOMNode $node = null, $selector, array $functions = [])
     {
         return iterator_to_array(self::selectNodesIter($node, $selector, $functions));
     }
 
-    public static function selectNodesIter(DOMNode $node = null, $selector, array $functions = [])
+    public static function selectNodesIter(\DOMNode $node = null, $selector, array $functions = [])
     {
         list($maxLevel, $by, $remaining) = self::_compileSelector($selector, $functions);
         if (isset($remaining)) {
@@ -117,7 +131,7 @@ class DOMUtils
         }
     }
 
-    public static function matches(DOMNode $node = null, $selector, array $functions = [])
+    public static function matches(\DOMNode $node = null, $selector, array $functions = [])
     {
         $by = self::compileSimpleSelector($node, $selector, $functions);
 
@@ -128,13 +142,13 @@ class DOMUtils
     {
         list($maxLevel, $by, $remaining) = self::_compileSelector($selector, $functions);
         if (isset($maxLevel) || isset($remaining)) {
-            throw new Exception('Complex selectors are not allowed here');
+            throw new \Exception('Complex selectors are not allowed here');
         }
 
         return $by;
     }
 
-    public static function getClasses(DOMElement $node = null)
+    public static function getClasses(\DOMElement $node = null)
     {
         if ($node === null) {
             return array();
@@ -143,7 +157,7 @@ class DOMUtils
         return array_filter(explode(' ', $node->getAttribute('class')));
     }
 
-    public static function hasClass(DOMElement $node = null, $className)
+    public static function hasClass(\DOMElement $node = null, $className)
     {
         if ($node === null) {
             return false;
@@ -209,7 +223,7 @@ class DOMUtils
             } elseif ($selector->eat(':')) {
                 $function = $selector->eatSpan(self::SELECTOR_IDENTIFIER_SPAN);
                 if (!isset($functions[$function]) && !isset(self::$_std_functions[$function])) {
-                    throw new Exception('Unknown selector function');
+                    throw new \Exception('Unknown selector function');
                 }
                 if ($selector->eat('(')) {
                     $paren = 1;
@@ -237,7 +251,7 @@ class DOMUtils
             } elseif ($selector->isEof() || $selector->eatWhiteSpace() || $selector->peek(1) == '>') {
                 break;
             } else {
-                throw new Exception('Invalid selector');
+                throw new \Exception('Invalid selector');
             }
         }
         if ($predicate === null) {
@@ -252,7 +266,7 @@ class DOMUtils
         return [
             'not' => function ($_, $selector, $and, $functions) {
                 if ($selector === null) {
-                    throw new Exception('Missing parameter');
+                    throw new \Exception('Missing parameter');
                 }
                 $by = self::compileSimpleSelector($selector, $functions);
                 if ($and) {
@@ -329,11 +343,11 @@ class DOMUtils
     {
         if ($and) {
             return function ($child) use ($id, $and) {
-                return $and($child) && $child instanceof DOMElement && $child->getAttribute('id') === $id;
+                return $and($child) && $child instanceof \DOMElement && $child->getAttribute('id') === $id;
             };
         } else {
             return function ($child) use ($id) {
-                return $child instanceof DOMElement && $child->getAttribute('id') === $id;
+                return $child instanceof \DOMElement && $child->getAttribute('id') === $id;
             };
         }
     }
@@ -342,11 +356,11 @@ class DOMUtils
     {
         if ($and) {
             return function ($child) use ($className, $and) {
-                return $and($child) && $child instanceof DOMElement && self::hasClass($child, $className);
+                return $and($child) && $child instanceof \DOMElement && self::hasClass($child, $className);
             };
         } else {
             return function ($child) use ($className) {
-                return $child instanceof DOMElement && self::hasClass($child, $className);
+                return $child instanceof \DOMElement && self::hasClass($child, $className);
             };
         }
     }
