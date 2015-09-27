@@ -11,10 +11,10 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0",
-        "exsyst/reader-component": "~0.0"
+        "exsyst/io": "~0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4"
+        "phpunit/phpunit": "~4.8"
     },
     "autoload": {
         "psr-0": {
