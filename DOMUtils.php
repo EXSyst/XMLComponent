@@ -249,7 +249,7 @@ class DOMUtils
                 }
                 $factory = isset($functions[$function]) ? $functions[$function] : self::$_std_functions[$function];
                 $predicate = $factory($function, $param, $predicate, $functions);
-            } elseif ($selector->isEof() || $selector->eatWhiteSpace() || $selector->peek(1) == '>') {
+            } elseif ($selector->isFullyConsumed() || $selector->eatWhiteSpace() || $selector->peek(1) == '>') {
                 break;
             } else {
                 throw new \Exception('Invalid selector');
@@ -259,7 +259,7 @@ class DOMUtils
             $predicate = function () { return true; };
         }
 
-        return [$maxLevel, $predicate, $selector->isEof() ? null : self::_compileSelector($selector, $functions)];
+        return [$maxLevel, $predicate, $selector->isFullyConsumed() ? null : self::_compileSelector($selector, $functions)];
     }
 
     private static function _getStdFunctions()
