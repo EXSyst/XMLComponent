@@ -2,7 +2,8 @@
 
 namespace EXSyst\Component\XML;
 
-use EXSyst\Component\Grammar\StringReader;
+use EXSyst\Component\IO\Source\StringSource;
+use EXSyst\Component\IO\Reader\StringCDataReader;
 
 class DOMUtils
 {
@@ -201,8 +202,8 @@ class DOMUtils
 
             return [null, $factory($function, null, null, $functions), null];
         }
-        if (!($selector instanceof StringReader)) {
-            $selector = new StringReader($selector);
+        if (!($selector instanceof StringCDataReader)) {
+            $selector = new StringCDataReader(new StringSource($selector));
         }
         if ($selector->eat('>')) {
             $maxLevel = 1;
