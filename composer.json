@@ -21,5 +21,10 @@
             "EXSyst\\Component\\XML": ""
         }
     },
-    "target-dir": "EXSyst/Component/XML"
+    "target-dir": "EXSyst/Component/XML",
+    "extra": {
+        "branch-alias": {
+            "dev-1.0": "1.1.x-dev" 
+        }
+    }
 }
